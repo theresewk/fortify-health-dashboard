@@ -90,14 +90,14 @@ function getRiskLevel(score: number) {
 function getRiskBadgeClass(score: number) {
   const level = getRiskLevel(score);
   if (level === 'High') return 'border-[#e03616]/20 bg-[#e03616]/10 text-[#b42318] hover:bg-[#e03616]/10';
-  if (level === 'Medium') return 'border-[#8b80f9]/20 bg-[#8b80f9]/10 text-[#6f63db] hover:bg-[#8b80f9]/10';
+  if (level === 'Medium') return 'border-[#d9a441]/25 bg-[#fff3da] text-[#9a6700] hover:bg-[#fff3da]';
   return 'border-[#6a8d73]/20 bg-[#6a8d73]/10 text-[#527059] hover:bg-[#6a8d73]/10';
 }
 
 function getRiskTextClass(score: number) {
   const level = getRiskLevel(score);
   if (level === 'High') return 'text-[#e03616]';
-  if (level === 'Medium') return 'text-[#6f63db]';
+  if (level === 'Medium') return 'text-[#9a6700]';
   return 'text-[#527059]';
 }
 
@@ -111,14 +111,14 @@ function getSupportStatus(snapshot: RegionSnapshot) {
 
 function getSupportStatusClass(status: string) {
   if (status === 'Escalated') return 'text-[#b42318]';
-  if (status === 'Under Review') return 'text-[#6f63db]';
+  if (status === 'Under Review') return 'text-[#5d59cf]';
   if (status === 'Monitoring') return 'text-[#9a6700]';
   return 'text-[#527059]';
 }
 
 function getSupportStatusBadgeClass(status: string) {
   if (status === 'Escalated') return 'border-[#e03616]/20 bg-[#e03616]/8';
-  if (status === 'Under Review') return 'border-[#8b80f9]/20 bg-[#8b80f9]/10';
+  if (status === 'Under Review') return 'border-[#8884ff]/25 bg-[#8884ff]/10';
   if (status === 'Monitoring') return 'border-[#f6b10a]/25 bg-[#f6b10a]/10';
   return 'border-[#6a8d73]/20 bg-[#6a8d73]/10';
 }
@@ -204,9 +204,9 @@ function getBottleneckLabel(key: BottleneckKey) {
 }
 
 function getDriverAccent(key: BottleneckKey) {
-  if (key === 'production') return '#6f63db';
-  if (key === 'quality') return '#6a8d73';
-  return '#f6b10a';
+  if (key === 'production') return '#1b998b';
+  if (key === 'quality') return '#1b3b6f';
+  return '#8884ff';
 }
 
 function getDriverValueLabel(
@@ -522,9 +522,9 @@ export default function App() {
   const inDetailState = detailRegionId !== 'All' && selectedRegion && activeSnapshot;
 
   return (
-    <div className="min-h-screen text-[#17211d]">
+    <div className="min-h-screen text-[#1b3b6f]">
       <header className="relative overflow-hidden border-b border-white/60 bg-white/70 px-4 py-5 backdrop-blur md:px-6">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#6f63db]/40 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1b998b]/35 to-transparent" />
         <div className="mx-auto flex max-w-[1440px] flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-white/70 bg-white shadow-[0_16px_34px_-22px_rgba(23,33,29,0.35)]">
@@ -537,10 +537,10 @@ export default function App() {
             <div className="space-y-2">
               <div className="dashboard-label">Fortify Health Decision Support</div>
               <div>
-                <h1 className="text-[24px] font-semibold leading-tight tracking-[-0.02em] md:text-[30px]">
+                <h1 className="text-[24px] font-semibold leading-tight md:text-[30px]">
                   Regional Programme Execution Risk Dashboard
                 </h1>
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-[#5b6862]">
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-[#53637c]">
                   Tracks regional programme execution risk, key performance drivers, and support
                   reallocation signals for monthly review.
                 </p>
@@ -548,7 +548,7 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-start justify-end">
-            <div className="pt-2 text-right text-xs text-[#66736d]">
+            <div className="pt-2 text-right text-xs text-[#6a7a90]">
               Last updated: {format(parseISO(`${latestMonth}-01`), 'd MMM yyyy')}
             </div>
           </div>
@@ -563,17 +563,17 @@ export default function App() {
                 <div className="space-y-2">
                   <div className="dashboard-label">Overview Controls</div>
                   <div>
-                    <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-[#17211d]">
+                    <h2 className="text-[22px] font-semibold text-[#1b3b6f]">
                       Scan regional risk at a glance
                     </h2>
-                    <p className="mt-1 max-w-2xl text-sm leading-6 text-[#5b6862]">
+                    <p className="mt-1 max-w-2xl text-sm leading-6 text-[#53637c]">
                       Filter the dashboard by region, workstream, or review window.
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <span className="dashboard-chip">
-                    <Filter size={14} className="mr-2 text-[#6a8d73]" />
+                    <Filter size={14} className="mr-2 text-[#1b998b]" />
                     {regionSnapshots.length} visible regions
                   </span>
                   <span className="dashboard-chip">
@@ -633,7 +633,7 @@ export default function App() {
                 </CompactSelect>
 
                 <button
-                  className="ml-auto inline-flex h-11 items-center rounded-full border border-transparent px-4 text-sm font-medium text-[#6f63db] transition hover:border-[#d7d3fb] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6f63db]/35"
+                  className="ml-auto inline-flex h-11 items-center rounded-full border border-transparent px-4 text-sm font-medium text-[#1b998b] transition hover:border-[#d9e5df] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b998b]/25"
                   onClick={() => {
                     setSelectedRegionId('All');
                     setTimeRange('6');
@@ -652,7 +652,7 @@ export default function App() {
               value={overviewAverageRisk}
               label="Avg. Risk Score"
               sublabel="across visible regions"
-              accent={overviewAverageRisk >= 60 ? '#e03616' : '#6a8d73'}
+              accent={overviewAverageRisk >= 60 ? '#e03616' : '#1b998b'}
             />
             <OverviewKpiCard
               value={highRiskRegions}
@@ -664,7 +664,7 @@ export default function App() {
               value={improvingRegions}
               label="Improving"
               sublabel="risk decreasing"
-              accent="#6a8d73"
+              accent="#1b998b"
             />
             <OverviewKpiCard
               value={worseningRegions}
@@ -685,7 +685,7 @@ export default function App() {
                 </div>
                 <div className="dashboard-chip">Sorted by highest risk score</div>
               </div>
-              <p className="mt-3 text-sm leading-6 text-[#5b6862]">
+              <p className="mt-3 text-sm leading-6 text-[#53637c]">
                 Click a region to view detailed risk analysis. Sorted by risk score highest first.
               </p>
             </CardHeader>
@@ -736,7 +736,7 @@ export default function App() {
                             setDetailRegionId(snapshot.id);
                           }}
                         >
-                          <TableCell className="px-5 py-4 text-sm font-semibold text-[#17211d]">
+                          <TableCell className="px-5 py-4 text-sm font-semibold text-[#1b3b6f]">
                             {snapshot.name}
                           </TableCell>
                           <TableCell
@@ -793,7 +793,7 @@ export default function App() {
               <div className="space-y-4">
                 <Button
                   variant="ghost"
-                  className="h-10 rounded-full border border-[#dfe8df] bg-white px-4 text-sm text-[#17211d] shadow-[0_14px_28px_-24px_rgba(23,33,29,0.35)] hover:bg-[#f7faf7]"
+                  className="h-10 rounded-full border border-[#dbe3dc] bg-white px-4 text-sm text-[#1b3b6f] shadow-[0_14px_28px_-24px_rgba(27,59,111,0.14)] hover:bg-[#fbfcf6]"
                   onClick={() => {
                     setDetailRegionId('All');
                     setSelectedRegionId(overviewRegionFilter);
@@ -805,7 +805,7 @@ export default function App() {
                 <div>
                   <div className="dashboard-label">Regional Deep Dive</div>
                   <div className="mt-2 flex flex-wrap items-center gap-3">
-                    <h2 className="text-[32px] font-semibold leading-tight tracking-[-0.03em] md:text-[38px]">
+                    <h2 className="text-[32px] font-semibold leading-tight md:text-[38px]">
                       {selectedRegion.name}
                     </h2>
                     <Badge
@@ -817,7 +817,7 @@ export default function App() {
                       {workstreamFilter === 'All' ? 'All Workstreams' : workstreamFilter}
                     </Badge>
                   </div>
-                  <p className="mt-3 max-w-3xl text-sm leading-6 text-[#5b6862]">
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-[#53637c]">
                     Detailed regional risk drivers and intervention history for the selected
                     snapshot, with monthly trend context preserved from the overview.
                   </p>
@@ -825,10 +825,10 @@ export default function App() {
               </div>
               <div className="dashboard-soft-card rounded-2xl border px-4 py-4 lg:max-w-sm">
                 <div className="dashboard-label">Active Snapshot</div>
-                <p className="mt-2 text-xl font-semibold text-[#17211d]">
+                <p className="mt-2 text-xl font-semibold text-[#1b3b6f]">
                   {format(parseISO(`${activeSnapshot.month}-01`), 'MMMM yyyy')}
                 </p>
-                <p className="mt-1 text-sm leading-6 text-[#5b6862]">
+                <p className="mt-1 text-sm leading-6 text-[#53637c]">
                   KPI cards, diagnosis, chart focus, and support tracker are aligned to this month.
                 </p>
               </div>
@@ -837,21 +837,21 @@ export default function App() {
 
           <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <DetailKpiCard
-              icon={<Package size={18} className="text-[#6f63db]" />}
+              icon={<Package size={18} className="text-[#1b998b]" />}
               label="Production"
               value={activeSnapshot.production}
               delta={activeSnapshot.productionDelta}
               description="% of current target achieved"
             />
             <DetailKpiCard
-              icon={<ShieldCheck size={18} className="text-[#6a8d73]" />}
+              icon={<ShieldCheck size={18} className="text-[#1b3b6f]" />}
               label="Quality Compliance"
               value={activeSnapshot.quality}
               delta={activeSnapshot.qualityDelta}
               description="Average audit score across active mills"
             />
             <DetailKpiCard
-              icon={<Users size={18} className="text-[#f6b10a]" />}
+              icon={<Users size={18} className="text-[#8884ff]" />}
               label="Beneficiary Reach"
               value={activeSnapshot.reach}
               delta={activeSnapshot.reachDelta}
@@ -886,7 +886,7 @@ export default function App() {
                       </Badge>
                     )}
                   </div>
-                  <p className="mt-4 text-sm leading-7 text-[#5b6862]">
+                  <p className="mt-4 text-sm leading-7 text-[#53637c]">
                     For {format(parseISO(`${activeSnapshot.month}-01`), 'MMMM yyyy')}, the primary
                     bottleneck is {getBottleneckLabel(diagnosis.primaryBottleneck).toLowerCase()} at{' '}
                     {getDriverValueLabel(diagnosis.primaryBottleneck, activeSnapshot)}
@@ -915,10 +915,10 @@ export default function App() {
                 </div>
                 <div className="dashboard-soft-card rounded-2xl border px-4 py-4">
                   <p className="dashboard-label">Recommended Support Type</p>
-                  <p className="mt-3 text-base font-semibold text-[#17211d]">
+                  <p className="mt-3 text-base font-semibold text-[#1b3b6f]">
                     {supportRecommendation?.supportType ?? diagnosis.recommendedSupportType}
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-[#5b6862]">
+                  <p className="mt-2 text-sm leading-6 text-[#53637c]">
                     {supportRecommendation?.rationale ??
                       `This is the most relevant reallocation lever for leadership review for the ${format(
                         parseISO(`${activeSnapshot.month}-01`),
@@ -928,7 +928,7 @@ export default function App() {
                 </div>
                 <div className="dashboard-soft-card rounded-2xl border px-4 py-4">
                   <p className="dashboard-label">Example Intervention</p>
-                  <p className="mt-3 text-sm leading-6 text-[#17211d]">
+                  <p className="mt-3 text-sm leading-6 text-[#1b3b6f]">
                     {supportRecommendation?.intervention ?? diagnosis.exampleIntervention}
                   </p>
                 </div>
@@ -942,7 +942,7 @@ export default function App() {
               <CardTitle className="mt-2 text-[20px] font-semibold tracking-[-0.02em]">
                 Risk & Performance Trends - {selectedRegion.name}
               </CardTitle>
-              <p className="mt-3 text-sm leading-6 text-[#5b6862]">
+              <p className="mt-3 text-sm leading-6 text-[#53637c]">
                 Click any chart point to inspect that month. The KPI cards, diagnosis, and support
                 tracker follow the selected snapshot.
               </p>
@@ -995,8 +995,8 @@ export default function App() {
                     <ReferenceLine
                       key={allocation.id}
                       x={formatMonth(allocation.month)}
-                      stroke={
-                        allocation.type === 'Programme Support' ? '#6f63db' : '#6a8d73'
+                    stroke={
+                        allocation.type === 'Programme Support' ? '#1b998b' : '#1b3b6f'
                       }
                       strokeDasharray="3 5"
                     />
@@ -1018,9 +1018,9 @@ export default function App() {
                   <Line
                     type="monotone"
                     dataKey="Production"
-                    stroke="#6f63db"
+                    stroke="#1b998b"
                     strokeWidth={2.4}
-                    activeDot={{ r: 5, strokeWidth: 0, fill: '#6f63db' }}
+                    activeDot={{ r: 5, strokeWidth: 0, fill: '#1b998b' }}
                     dot={(props) => (
                       <SelectableDot
                         {...props}
@@ -1032,9 +1032,9 @@ export default function App() {
                   <Line
                     type="monotone"
                     dataKey="Quality"
-                    stroke="#6a8d73"
+                    stroke="#1b3b6f"
                     strokeWidth={2.4}
-                    activeDot={{ r: 5, strokeWidth: 0, fill: '#6a8d73' }}
+                    activeDot={{ r: 5, strokeWidth: 0, fill: '#1b3b6f' }}
                     dot={(props) => (
                       <SelectableDot
                         {...props}
@@ -1075,8 +1075,8 @@ export default function App() {
                     onClick={() => setActiveDetailMonth(point.month)}
                     className={`rounded-full border px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6f63db]/35 ${
                       isActive
-                        ? 'border-[#6f63db]/25 bg-[#6f63db]/10 text-[#5d52c4] shadow-[0_18px_32px_-24px_rgba(111,99,219,0.7)]'
-                        : 'border-[#dfe8df] bg-white text-[#5b6862] hover:border-[#cfdccd] hover:bg-[#f8fbf8]'
+                        ? 'border-[#1b998b]/20 bg-[#1b998b]/10 text-[#1b998b] shadow-[0_18px_32px_-24px_rgba(27,153,139,0.38)]'
+                        : 'border-[#dbe3dc] bg-white text-[#53637c] hover:border-[#cad8d0] hover:bg-[#fbfcf6]'
                     }`}
                   >
                     {formatMonth(point.month)}
@@ -1093,7 +1093,7 @@ export default function App() {
                 Support Reallocation Tracker -{' '}
                 {format(parseISO(`${activeSnapshot.month}-01`), 'MMM yyyy')}
               </CardTitle>
-              <p className="mt-3 text-sm leading-6 text-[#5b6862]">
+              <p className="mt-3 text-sm leading-6 text-[#53637c]">
                 Support events recorded for the currently selected snapshot month.
               </p>
             </CardHeader>
@@ -1108,26 +1108,26 @@ export default function App() {
                       className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
                       style={{
                         backgroundColor:
-                          allocation.type === 'Programme Support' ? '#6f63db' : '#6a8d73',
+                          allocation.type === 'Programme Support' ? '#1b998b' : '#1b3b6f',
                       }}
                     />
                     <div className="min-w-[5.5rem] text-xs font-semibold uppercase tracking-[0.12em] text-[#6f7b74]">
                       {format(parseISO(`${allocation.month}-01`), 'MMM yyyy')}
                     </div>
-                    <div className="flex-1 text-sm leading-6 text-[#17211d]">
+                    <div className="flex-1 text-sm leading-6 text-[#1b3b6f]">
                       <span>{allocation.description}</span>
-                      <span className="ml-2 inline-flex rounded-full border border-[#dfe8df] bg-[#f7faf7] px-2 py-0.5 text-[11px] font-semibold text-[#5b6862]">
+                      <span className="ml-2 inline-flex rounded-full border border-[#dfe8e2] bg-[#f4f8fb] px-2 py-0.5 text-[11px] font-semibold text-[#53637c]">
                         {allocation.type}
                       </span>
                     </div>
-                    <div className="max-w-[320px] text-sm leading-6 text-[#5b6862]">
+                    <div className="max-w-[320px] text-sm leading-6 text-[#53637c]">
                       {allocation.observedImpact ?? 'Impact evaluation in progress'}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="border-t border-[#e4ece4] px-5 py-6 text-sm italic text-[#5b6862] md:px-6">
+              <div className="border-t border-[#e4ece7] px-5 py-6 text-sm italic text-[#53637c] md:px-6">
                 No support allocations recorded for{' '}
                 {format(parseISO(`${activeSnapshot.month}-01`), 'MMMM yyyy')}.
               </div>
@@ -1136,7 +1136,7 @@ export default function App() {
         </main>
       )}
 
-      <footer className="border-t border-white/60 px-4 py-4 text-center text-xs text-[#66736d] md:px-6">
+      <footer className="border-t border-white/60 px-4 py-4 text-center text-xs text-[#6a7a90] md:px-6">
         Fortify Health - Internal Decision Support Dashboard (Prototype) - Data is fictional and
         for demonstration purposes only
       </footer>
@@ -1157,7 +1157,7 @@ function CompactSelect({
 }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="h-11 min-w-[180px] rounded-full border border-[#d6e0d6] bg-white px-4 text-sm font-medium text-[#17211d] shadow-[0_12px_24px_-22px_rgba(23,33,29,0.4)] transition focus:ring-[#6f63db]/30 data-[placeholder]:text-[#6a7771]">
+      <SelectTrigger className="h-11 min-w-[180px] rounded-full border border-[#dbe3dc] bg-white px-4 text-sm font-medium text-[#1b3b6f] shadow-[0_12px_24px_-22px_rgba(27,59,111,0.16)] transition focus:ring-[#1b998b]/25 data-[placeholder]:text-[#6a7a90]">
         <SelectValue>{displayValue}</SelectValue>
       </SelectTrigger>
       <SelectContent>{children}</SelectContent>
@@ -1183,7 +1183,7 @@ function OverviewKpiCard({
           <div>
             <div className="dashboard-label">{label}</div>
             <div
-              className="mt-3 text-4xl font-semibold tracking-[-0.03em] tabular-nums"
+              className="mt-3 text-4xl font-semibold tabular-nums"
               style={{ color: accent }}
             >
               {value}
@@ -1194,10 +1194,10 @@ function OverviewKpiCard({
           </div>
         </div>
         <div className="mt-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-[#5b6862]">{sublabel}</div>
-          <div className="h-px flex-1 bg-[#e7eee7]" />
+          <div className="text-sm text-[#53637c]">{sublabel}</div>
+          <div className="h-px flex-1 bg-[#e4ece7]" />
         </div>
-        <p className="mt-3 text-xs uppercase tracking-[0.12em] text-[#7b8782]">
+        <p className="mt-3 text-xs uppercase tracking-[0.12em] text-[#6a7a90]">
           Current review window
         </p>
       </CardContent>
@@ -1224,27 +1224,35 @@ function DetailKpiCard({
     <Card className="dashboard-card rounded-[24px] border">
       <CardContent className="px-5 py-5">
         <div className="mb-4 flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#6f63db]/10">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1b998b]/10">
             {icon}
           </div>
           <div className="min-w-0">
             <p className="dashboard-label">{label}</p>
-            <p className="mt-1 text-sm leading-6 text-[#5b6862]">{description}</p>
+            <p className="mt-1 text-sm leading-6 text-[#53637c]">{description}</p>
           </div>
         </div>
         <div className="flex items-end justify-between gap-3">
-          <div className="text-4xl font-semibold tracking-[-0.03em] tabular-nums text-[#17211d]">
+          <div className="text-4xl font-semibold tabular-nums text-[#1b3b6f]">
             {value}%
           </div>
           <div
             className={`rounded-full border px-3 py-1 text-sm font-semibold ${
               delta === null
-                ? 'border-[#dfe8df] bg-[#f6faf6]'
+                ? 'border-transparent bg-transparent px-0 py-0 text-[#6a7a90] shadow-none'
                 : getPerformanceTrendBadgeClass(delta)
             } ${trendMeta.className}`}
           >
-            {trendMeta.label}
-            <span className="ml-1">{trendMeta.detail}</span>
+            {delta === null ? (
+              <span className="text-right text-xs font-medium tracking-[0.01em]">
+                {trendMeta.detail}
+              </span>
+            ) : (
+              <>
+                {trendMeta.label}
+                <span className="ml-1">{trendMeta.detail}</span>
+              </>
+            )}
           </div>
         </div>
       </CardContent>
