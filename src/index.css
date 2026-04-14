@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600;700&family=Public+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -6,8 +7,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
+    --font-heading: 'Geist Variable', sans-serif;
+    --font-sans: 'Public Sans', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -57,46 +58,46 @@
 }
 
 :root {
-    --background: #f4f8f3;
-    --foreground: #17211d;
-    --card: #fdfdf9;
-    --card-foreground: #17211d;
-    --popover: #ffffff;
-    --popover-foreground: #17211d;
-    --primary: #6f63db;
+    --background: #feffea;
+    --foreground: #1b3b6f;
+    --card: #fffff4;
+    --card-foreground: #1b3b6f;
+    --popover: #fffff8;
+    --popover-foreground: #1b3b6f;
+    --primary: #1b998b;
     --primary-foreground: #ffffff;
-    --secondary: #6a8d73;
+    --secondary: #1b3b6f;
     --secondary-foreground: #ffffff;
-    --muted: #e7eee7;
-    --muted-foreground: #58655f;
-    --accent: #dce7dc;
-    --accent-foreground: #ffffff;
+    --muted: #f6f7e9;
+    --muted-foreground: #53637c;
+    --accent: #f2befc;
+    --accent-foreground: #1b3b6f;
     --destructive: #e03616;
     --destructive-foreground: #ffffff;
-    --border: #d6e0d6;
-    --input: #d6e0d6;
-    --ring: #6f63db;
-    --chart-1: #6f63db;
-    --chart-2: #6a8d73;
+    --border: #dbe3dc;
+    --input: #dbe3dc;
+    --ring: #1b998b;
+    --chart-1: #1b998b;
+    --chart-2: #1b3b6f;
     --chart-3: #e03616;
-    --chart-4: #f3f6e7;
-    --chart-5: #f4f8f3;
-    --radius: 0.85rem;
-    --sidebar: #f4f8f3;
-    --sidebar-foreground: #17211d;
-    --sidebar-primary: #6f63db;
+    --chart-4: #8884ff;
+    --chart-5: #f2befc;
+    --radius: 0.95rem;
+    --sidebar: #feffea;
+    --sidebar-foreground: #1b3b6f;
+    --sidebar-primary: #1b998b;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #6a8d73;
+    --sidebar-accent: #1b3b6f;
     --sidebar-accent-foreground: #ffffff;
-    --sidebar-border: #d6e0d6;
-    --sidebar-ring: #6f63db;
+    --sidebar-border: #dbe3dc;
+    --sidebar-ring: #1b998b;
 
     /* Custom Palette Variables */
-    --soft-periwinkle: #6f63db;
-    --mint-cream: #f4f8f3;
-    --ivory: #fdfdf9;
+    --soft-periwinkle: #8884ff;
+    --mint-cream: #f6f7e9;
+    --ivory: #feffea;
     --burnt-tangerine: #e03616;
-    --dusty-olive: #6a8d73;
+    --dusty-olive: #1b998b;
 }
 
 .dark {
@@ -140,38 +141,43 @@
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(circle at top left, rgba(111, 99, 219, 0.09), transparent 30%),
-      radial-gradient(circle at top right, rgba(106, 141, 115, 0.10), transparent 34%),
-      linear-gradient(180deg, #f6faf5 0%, #f2f6f1 100%);
+      radial-gradient(circle at top left, rgba(27, 153, 139, 0.08), transparent 30%),
+      radial-gradient(circle at top right, rgba(136, 132, 255, 0.10), transparent 26%),
+      linear-gradient(180deg, #fffef1 0%, #fbfce9 100%);
   }
   html {
     @apply font-sans;
   }
 
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.035em;
+  }
+
   ::selection {
-    background: rgba(111, 99, 219, 0.18);
-    color: #17211d;
+    background: rgba(136, 132, 255, 0.18);
+    color: #1b3b6f;
   }
 }
 
 @layer utilities {
   .dashboard-card {
-    @apply border-white/70 bg-white/90 shadow-[0_18px_40px_-24px_rgba(23,33,29,0.24)] backdrop-blur-sm;
+    @apply border-[#dfe8e2] bg-[#fffff8]/92 shadow-[0_22px_45px_-30px_rgba(27,59,111,0.12)] backdrop-blur-sm;
   }
 
   .dashboard-soft-card {
-    @apply border-white/60 bg-[#f7faf6]/88 shadow-[0_18px_35px_-28px_rgba(23,33,29,0.2)];
+    @apply border-[#e5ebe5] bg-[#f7fbf8]/88 shadow-[0_20px_38px_-30px_rgba(27,59,111,0.1)];
   }
 
   .dashboard-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6f7b74];
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6a7a90];
   }
 
   .dashboard-chip {
-    @apply inline-flex items-center rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-medium text-[#495650] shadow-[0_8px_24px_-20px_rgba(23,33,29,0.35)];
+    @apply inline-flex items-center rounded-full border border-[#dfe8e2] bg-[#fffff7] px-3 py-1 text-xs font-medium text-[#41556f] shadow-[0_8px_24px_-20px_rgba(27,59,111,0.18)];
   }
 
   .dashboard-gridline {
-    stroke: rgba(111, 99, 219, 0.16);
+    stroke: rgba(27, 59, 111, 0.12);
   }
 }
