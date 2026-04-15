@@ -1,5 +1,7 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
   ChevronLeft,
   Filter,
   Package,
@@ -52,6 +54,7 @@ import fortifyLogo from '@/src/assets/fortify-logo.png';
 type RiskLevelFilter = 'All' | 'High' | 'Medium' | 'Low';
 type TimeRangeFilter = '3' | '6';
 type RegionFilter = 'All' | (typeof REGIONS)[number]['id'];
+type TableSortOrder = 'desc' | 'asc';
 
 type RegionSnapshot = {
   id: string;
@@ -66,6 +69,13 @@ type RegionSnapshot = {
   supportStatus: string;
 };
 
+type OverviewRegionSummary = {
+  id: string;
+  averageRiskScore: number;
+  firstRiskScore: number;
+  lastRiskScore: number;
+};
+
 const TIME_RANGE_OPTIONS: TimeRangeFilter[] = ['3', '6'];
 
 function average(values: number[]) {
@@ -73,8 +83,14 @@ function average(values: number[]) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function round(value: number) {
-  return Number(value.toFixed(1));
+function round(value: number, digits = 1) {
+  return Number(value.toFixed(digits));
+}
+
+function formatNumber(value: number, digits = 2) {
+  return Number.isInteger(value)
+    ? value.toString()
+    : Number(value.toFixed(digits)).toString();
 }
 
 function formatMonth(month: string) {
@@ -314,7 +330,14 @@ function CustomTrendTooltip({
         {label}
       </p>
       <div className="space-y-2">
-        {payload.map((entry) => (
+        {payload.map((entry) => {
+          const isRiskScore = entry.name === 'Risk Score';
+          const formattedValue =
+            typeof entry.value === 'number'
+              ? `${formatNumber(entry.value)}${isRiskScore ? '' : '%'}`
+              : entry.value;
+
+          return (
           <div key={entry.name} className="flex items-center justify-between gap-4 text-sm">
             <div className="flex items-center gap-2 text-[#46524c]">
               <span
@@ -323,9 +346,10 @@ function CustomTrendTooltip({
               />
               <span>{entry.name}</span>
             </div>
-            <span className="font-semibold tabular-nums text-[#17211d]">{entry.value}%</span>
+            <span className="font-semibold tabular-nums text-[#17211d]">{formattedValue}</span>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -379,6 +403,7 @@ export default function App() {
   const [timeRange, setTimeRange] = useState<TimeRangeFilter>('6');
   const [riskLevelFilter, setRiskLevelFilter] = useState<RiskLevelFilter>('All');
   const [activeDetailMonth, setActiveDetailMonth] = useState<string | null>(null);
+  const [tableSortOrder, setTableSortOrder] = useState<TableSortOrder>('desc');
 
   const visibleMonths = useMemo(
     () => MONTHS.slice(-Number.parseInt(timeRange, 10)),
@@ -397,7 +422,7 @@ export default function App() {
     });
   }, [selectedRegionId, visibleMonths, workstreamFilter]);
 
-  const regionSnapshots = useMemo(() => {
+  const latestRegionSnapshots = useMemo(() => {
     return REGIONS.map((region) => {
       const currentRecords = filteredPerformance.filter(
         (record) => record.regionId === region.id && record.month === latestMonth,
@@ -419,9 +444,57 @@ export default function App() {
       .filter((snapshot) => {
         if (riskLevelFilter === 'All') return true;
         return getRiskLevel(snapshot.riskScore) === riskLevelFilter;
-      })
-      .sort((left, right) => right.riskScore - left.riskScore);
+      });
   }, [filteredPerformance, latestMonth, previousMonth, riskLevelFilter]);
+
+  const regionSnapshots = useMemo(() => {
+    return [...latestRegionSnapshots].sort((left, right) =>
+      tableSortOrder === 'desc'
+        ? right.riskScore - left.riskScore
+        : left.riskScore - right.riskScore,
+    );
+  }, [latestRegionSnapshots, tableSortOrder]);
+
+  const overviewRegionSummaries = useMemo(() => {
+    return REGIONS.map((region) => {
+      const monthSummaries = visibleMonths
+        .map((month) => {
+          const monthRecords = filteredPerformance.filter(
+            (record) => record.regionId === region.id && record.month === month,
+          );
+
+          if (!monthRecords.length) return null;
+
+          const production = average(monthRecords.map((record) => record.production));
+          const quality = average(monthRecords.map((record) => record.quality));
+          const reach = average(monthRecords.map((record) => record.reach));
+
+          return {
+            month,
+            riskScore: calculateRiskScore(production, quality, reach),
+          };
+        })
+        .filter(
+          (
+            monthSummary,
+          ): monthSummary is {
+            month: string;
+            riskScore: number;
+          } => monthSummary !== null,
+        );
+
+      if (!monthSummaries.length) return null;
+
+      const averageRiskScore = average(monthSummaries.map((entry) => entry.riskScore));
+
+      return {
+        id: region.id,
+        averageRiskScore: round(averageRiskScore, 2),
+        firstRiskScore: round(monthSummaries[0].riskScore, 2),
+        lastRiskScore: round(monthSummaries[monthSummaries.length - 1].riskScore, 2),
+      } satisfies OverviewRegionSummary;
+    }).filter((summary): summary is OverviewRegionSummary => summary !== null);
+  }, [filteredPerformance, visibleMonths]);
 
   const selectedRegion = useMemo(() => {
     if (detailRegionId === 'All') return null;
@@ -487,8 +560,8 @@ export default function App() {
       (record) =>
         record.regionId === selectedRegion.id &&
         visibleMonths.includes(record.month) &&
-        record.month === activeSnapshot?.month,
-    ).sort((left, right) => left.month.localeCompare(right.month));
+        record.month <= (activeSnapshot?.month ?? ''),
+    ).sort((left, right) => right.month.localeCompare(left.month));
   }, [activeSnapshot?.month, selectedRegion, visibleMonths]);
 
   const diagnosis = activeSnapshot
@@ -506,17 +579,17 @@ export default function App() {
           activeSnapshot,
         )
       : null;
-  const overviewAverageRisk = regionSnapshots.length
-    ? round(average(regionSnapshots.map((snapshot) => snapshot.riskScore)))
+  const overviewAverageRisk = overviewRegionSummaries.length
+    ? round(average(overviewRegionSummaries.map((summary) => summary.averageRiskScore)), 2)
     : 0;
-  const improvingRegions = regionSnapshots.filter(
+  const improvingRegions = latestRegionSnapshots.filter(
     (snapshot) => snapshot.riskScore < snapshot.previousRiskScore - 0.5,
   ).length;
-  const worseningRegions = regionSnapshots.filter(
+  const worseningRegions = latestRegionSnapshots.filter(
     (snapshot) => snapshot.riskScore > snapshot.previousRiskScore + 0.5,
   ).length;
-  const highRiskRegions = regionSnapshots.filter(
-    (snapshot) => getRiskLevel(snapshot.riskScore) === 'High',
+  const highRiskRegions = overviewRegionSummaries.filter(
+    (summary) => getRiskLevel(summary.averageRiskScore) === 'High',
   ).length;
 
   const inDetailState = detailRegionId !== 'All' && selectedRegion && activeSnapshot;
@@ -571,15 +644,7 @@ export default function App() {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <span className="dashboard-chip">
-                    <Filter size={14} className="mr-2 text-[#1b998b]" />
-                    {regionSnapshots.length} visible regions
-                  </span>
-                  <span className="dashboard-chip">
-                    Review month {format(parseISO(`${latestMonth}-01`), 'MMM yyyy')}
-                  </span>
-                </div>
+                <div />
               </div>
 
               <div className="flex flex-wrap items-center gap-3 rounded-[24px] border border-[#dfe8df] bg-[#f6faf6] p-3">
@@ -639,6 +704,7 @@ export default function App() {
                     setTimeRange('6');
                     setWorkstreamFilter('All');
                     setRiskLevelFilter('All');
+                    setTableSortOrder('desc');
                   }}
                 >
                   Reset filters
@@ -683,10 +749,29 @@ export default function App() {
                     Regional Risk Overview
                   </CardTitle>
                 </div>
-                <div className="dashboard-chip">Sorted by highest risk score</div>
+                <button
+                  type="button"
+                  className="dashboard-chip inline-flex items-center transition hover:border-[#c9d8cf] hover:bg-white"
+                  onClick={() =>
+                    setTableSortOrder((current) => (current === 'desc' ? 'asc' : 'desc'))
+                  }
+                >
+                  <Filter size={14} className="mr-2 text-[#1b998b]" />
+                  {tableSortOrder === 'desc' ? (
+                    <ArrowUpNarrowWide size={14} className="mr-2 text-[#53637c]" />
+                  ) : (
+                    <ArrowDownWideNarrow size={14} className="mr-2 text-[#53637c]" />
+                  )}
+                  {tableSortOrder === 'desc'
+                    ? 'Sort by: highest risk score'
+                    : 'Sort by: lowest risk score'}
+                </button>
               </div>
               <p className="mt-3 text-sm leading-6 text-[#53637c]">
-                Click a region to view detailed risk analysis. Sorted by risk score highest first.
+                Click a region to view detailed risk analysis. Table reflects the latest visible
+                month ({format(parseISO(`${latestMonth}-01`), 'MMM yyyy')}) and is sorted by risk
+                score{' '}
+                {tableSortOrder === 'desc' ? 'highest first' : 'lowest first'}.
               </p>
             </CardHeader>
             <CardContent className="p-0">
@@ -1094,7 +1179,8 @@ export default function App() {
                 {format(parseISO(`${activeSnapshot.month}-01`), 'MMM yyyy')}
               </CardTitle>
               <p className="mt-3 text-sm leading-6 text-[#53637c]">
-                Support events recorded for the currently selected snapshot month.
+                Support events recorded up to the selected snapshot month within the current review
+                window.
               </p>
             </CardHeader>
             {selectedSupport.length ? (
@@ -1128,8 +1214,9 @@ export default function App() {
               </div>
             ) : (
               <div className="border-t border-[#e4ece7] px-5 py-6 text-sm italic text-[#53637c] md:px-6">
-                No support allocations recorded for{' '}
-                {format(parseISO(`${activeSnapshot.month}-01`), 'MMMM yyyy')}.
+                No support allocations recorded up to{' '}
+                {format(parseISO(`${activeSnapshot.month}-01`), 'MMMM yyyy')} within the current
+                review window.
               </div>
             )}
           </Card>
@@ -1186,7 +1273,7 @@ function OverviewKpiCard({
               className="mt-3 text-4xl font-semibold tabular-nums"
               style={{ color: accent }}
             >
-              {value}
+              {formatNumber(value)}
             </div>
           </div>
           <div className="rounded-2xl p-3" style={{ backgroundColor: `${accent}14` }}>

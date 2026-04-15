@@ -1,14 +1,15 @@
 # Fortify Health Dashboard
 
-Fortify Health Dashboard is a light-mode web dashboard for reviewing regional programme execution risk across multiple regions and workstreams. It helps stakeholders scan risk levels, compare operational performance, inspect monthly trends, and review support reallocation signals without changing the underlying data logic or interaction model.
+Fortify Health Dashboard is a light-mode web dashboard for reviewing regional programme execution risk across multiple regions and workstreams. It helps stakeholders scan risk levels, compare operational performance, inspect monthly trends, diagnose likely bottlenecks behind underperformance, and review support reallocation signals within a selected review window.
 
 ## What the app shows
 
-- Regional risk overview ranked by highest risk score
-- KPI summaries for average risk, high-risk regions, improving regions, and worsening regions
+- Regional risk overview table based on the latest visible month, with toggleable risk-score sorting
+- KPI summaries for average risk, high-risk regions, improving regions, and worsening regions across the selected review window
 - Filters for region, workstream, review window, and risk level
 - Region drilldown with monthly risk and performance trends
-- Support reallocation tracker and diagnosis panels for the selected snapshot month
+- Snapshot-based diagnosis of primary and secondary bottlenecks for the selected region and month
+- Support reallocation tracker showing support events up to the selected snapshot month within the active review window
 
 ## Stack
 
@@ -43,3 +44,4 @@ Run locally:
 
 - The current dashboard data is mock data for prototype and review purposes.
 - The application is designed as an internal decision-support dashboard, not a public marketing site.
+- Overview KPI cards summarize the selected review window, while the regional table reflects the latest visible month within that window.
